@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VLČR - Vzdělaný Lid České Republiky | Lokni Soutěž</title>
+    <style>
+        :root {
+            --primary-color: #0077b6; /* Lokni / Vodní modrá */
+            --secondary-color: #00b4d8;
+            --bg-color: #f0f8ff;
+            --text-color: #333;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* Hlavička */
+        header {
+            width: 100%;
+            background-color: white;
+            padding: 15px 30px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            box-sizing: border-box;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            font-weight: 900;
+            font-size: 20px;
+            width: 55px;
+            height: 55px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 12px;
+            letter-spacing: 1px;
+            box-shadow: 0 4px 6px rgba(0, 119, 182, 0.3);
+        }
+
+        .title a {
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--primary-color);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .title a:hover {
+            color: var(--secondary-color);
+            text-decoration: underline;
+        }
+
+        /* Hlavní obsah */
+        main {
+            max-width: 900px;
+            margin: 40px 20px;
+            text-align: center;
+            background: white;
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.05);
+        }
+
+        h1 {
+            color: var(--primary-color);
+            margin-top: 0;
+            margin-bottom: 15px;
+        }
+
+        .description {
+            font-size: 18px;
+            line-height: 1.6;
+            margin-bottom: 25px;
+            color: #555;
+        }
+
+        .highlight-text {
+            font-size: 20px;
+            font-weight: bold;
+            color: var(--primary-color);
+            display: block;
+            margin: 20px 0;
+            padding: 15px;
+            background: #e6f7ff;
+            border-left: 5px solid var(--primary-color);
+            border-radius: 0 8px 8px 0;
+        }
+
+        .deadline {
+            display: inline-block;
+            background-color: #fff3cd;
+            color: #856404;
+            padding: 12px 25px;
+            border-radius: 30px;
+            font-weight: bold;
+            margin-bottom: 40px;
+            border: 1px solid #ffeeba;
+        }
+
+        /* Karty rivalů */
+        .competitors {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            flex-wrap: wrap;
+        }
+
+        .card {
+            background: var(--bg-color);
+            padding: 30px 20px;
+            border-radius: 16px;
+            width: 260px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s, box-shadow 0.3s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 20px rgba(0, 119, 182, 0.15);
+        }
+
+        .photo {
+            width: 160px;
+            height: 160px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 5px solid white;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            margin-bottom: 15px;
+        }
+
+        .card h2 {
+            margin: 10px 0 5px 0;
+            color: var(--text-color);
+        }
+
+        .qr-code {
+            width: 180px;
+            height: 180px;
+            margin-top: 15px;
+            cursor: zoom-in;
+            border-radius: 12px;
+            border: 2px solid white;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            transition: transform 0.2s;
+        }
+
+        .qr-code:hover {
+            transform: scale(1.05);
+        }
+
+        .qr-label {
+            font-family: monospace;
+            font-size: 13px;
+            color: #666;
+            margin-top: 10px;
+            background: #e2e8f0;
+            padding: 4px 10px;
+            border-radius: 6px;
+        }
+        
+        /* Modální okno pro JavaScriptové zvětšení QR */
+        #qrModal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            cursor: zoom-out;
+            backdrop-filter: blur(5px);
+        }
+
+        #qrModal img {
+            max-width: 90%;
+            max-height: 90%;
+            border: 15px solid white;
+            border-radius: 16px;
+            background: white;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        @keyframes popIn {
+            0% { transform: scale(0.8); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        /* Responzivita pro mobilní zařízení */
+        @media (max-width: 600px) {
+            .competitors { gap: 20px; }
+            .card { width: 100%; max-width: 300px; }
+            header { flex-direction: column; text-align: center; gap: 10px; }
+        }
+        .obraski {
+            max-width: 50px;
+            max-height: 50px;
+
+            object-fit: cover;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="logo-container">
+       <img class="obraski" src="logo_VLCR.png" />
+        <div class="title">
+            <a href="https://vzdelanylid.cz" target="_blank" rel="noopener noreferrer">Vzdělaný Lid České Republiky</a>
+        </div>
+    </div>
+</header>
+
+<main>
+    <h1>Podpořte svého favorita</h1>
+    <p class="description">
+        Velkolepá soutěž v konzumaci filtrované vody <strong>Lokni</strong>.
+    </p>
+    
+    <div class="highlight-text">
+        Souboj dvou největších rivalů v disciplíně komunitní konzumace filtrované vody. Zapojte se i Vy!
+    </div>
+
+    <div class="deadline">
+        ⏳ Soutěž končí v červnu, přesně v den konání VědaFestu (24. června 2026).
+    </div>
+
+    <div class="competitors">
+        <div class="card">
+            <img src="lukas.png" alt="Fotografie prvního rivala" class="photo">
+            <h2>Lukáš Horák</h2>
+            <p>Má voda ať lidstvo vede vpřed!</p>
+            <img src="lukasqrkodlokni.jpeg" alt="QR kód Lukáše Horáka" class="qr-code" onclick="enlargeQR(this.src)">
+            <div class="qr-label">QR kód Lukáše Horáka</div>
+        </div>
+
+        <div class="card">
+            <img src="https://picsum.photos/seed/rival2/300/300" alt="Fotografie druhého rivala" class="photo">
+            <h2>Robin Josef Šafařík</h2>
+            <p>Pijme vodu, pijme pitnou vodu!</p>
+            <img src="robinqrkodlokni.jpeg" alt="QR kód Robina Josefa Šafaříka" class="qr-code" onclick="enlargeQR(this.src)">
+            <div class="qr-label">QR kód Robina Josefa Šafaříka</div>
+        </div>
+    </div>
+</main>
+
+<div id="qrModal" onclick="closeModal()">
+    <img id="modalImg" src="" alt="Zvětšený detail QR kódu">
+</div>
+
+<script>
+    const modal = document.getElementById('qrModal');
+    const modalImg = document.getElementById('modalImg');
+
+    // Funkce pro otevření okna s velkým QR kódem
+    function enlargeQR(src) {
+        modalImg.src = src;
+        modal.style.display = 'flex';
+    }
+
+    // Funkce pro zavření okna (aktivuje se kliknutím kamkoliv do černé plochy)
+    function closeModal() {
+        modal.style.display = 'none';
+        modalImg.src = ''; // Vymažeme source pro bezpečné opětovné načtení
+    }
+
+    // Pro lepší přístupnost - zavření klávesou Escape
+    document.addEventListener('keydown', function(event) {
+        if (event.key === "Escape" && modal.style.display === 'flex') {
+            closeModal();
+        }
+    });
+</script>
+
+</body>
+</html>
